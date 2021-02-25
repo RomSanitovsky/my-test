@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+  <title>My Google Maps Feature</title>
+  <script src="https://unpkg.com/@google/markerclustererplus@4.0.1/dist/markerclustererplus.min.js"></script>
+  <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+  <nav>
+    <div class="topnav" style="font-size: 25px">
+      <a href="#Australia" id="Australia">Australia</a>
+      <a href="#Israel" id="Israel">Israel</a>
+      <a href="#United-States" id="United-States">United States</a>
+      <a href="#France" id="France">France</a>
+      <a href="#Japan" id="Japan">Japan</a>
+    </div>
+  </nav>
+  <body>
+    <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+
+    <script>
+      // Initialize and add the map
+      let map;
+      function initMap() {
+        // The location of Uluru
+        const uluru = { lat: -25.344, lng: 131.036 };
+        // The map, centered at Uluru
+        map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 4,
+          center: uluru,
+        });
+
+        let tempData = [];
+        fetch('http://localhost:3000/getusers')
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data.length);
+            tempData = data.map((el) => {
+              return new google.maps.Marker({
+                position: {
+                  lat: el.location_latitude,
+                  lng: el.location_longitude,
+                },
+              });
+            });
+          });
+        new MarkerClusterer(map, tempData, {
+          imagePath:
+            'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
+        });
+
+        function newLocation(newLat, newLng) {
+          map.setCenter({
+            lat: newLat,
+            lng: newLng,
+          });
+        }
+        document
+          .getElementById('Israel')
+          .addEventListener('click', function () {
+            map.setCenter(new google.maps.LatLng(32, 34));
+          });
+        document
+          .getElementById('Australia')
+          .addEventListener('click', function () {
+            map.setCenter(new google.maps.LatLng(-33.865143, 151.2099));
+          });
+        document
+          .getElementById('United-States')
+          .addEventListener('click', function () {
+            map.setCenter(new google.maps.LatLng(49.38, -66.94));
+          });
+        document
+          .getElementById('France')
+          .addEventListener('click', function () {
+            map.setCenter(new google.maps.LatLng(48.864716, 2.349014));
+          });
+        document.getElementById('Japan').addEventListener('click', function () {
+          map.setCenter(new google.maps.LatLng(35.652832, 139.839478));
+        });
+
+        fetch('http://localhost:3000/getusers')
+          .then((response) => response.json())
+          .then((data) => {});
+      }
+    </script>
+
+    <h3>My Google Maps Demo</h3>
+    <!--The div element for the map -->
+    <div id="map" style="height: 800px; width: 1300px"></div>
+
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC5abiKPVO2J1RwM-8AA7biri8UiBY4Soc&callback=initMap&libraries=&v=weekly"
+      async
+    ></script>
+  </body>
+</html>

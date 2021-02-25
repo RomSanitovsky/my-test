@@ -7,8 +7,8 @@ var dataArray = [];
 for(let i=0; i<1000; i++){
 data.id = i;
 data.name = faker.name.findName();
-data.location_latitude = faker.address.latitude();
-data.location_longitude = faker.address.longitude();
+data.location_latitude = parseInt(faker.address.latitude());
+data.location_longitude = parseInt(faker.address.longitude());
 dataArray[i] = {...data};
 }
 

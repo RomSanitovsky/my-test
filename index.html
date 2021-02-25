@@ -2,19 +2,18 @@
 <html>
   <title>My Google Maps Feature</title>
 
-
   <script src="//code.jquery.com/jquery-1.10.2.js"></script>
   <nav>
     <div class="topnav" style="font-size: 25px">
+      <a href="#GetSorted" id="GetSorted">Get-Sorted-Users</a>
       <a href="#Australia" id="Australia">Australia</a>
       <a href="#Israel" id="Israel">Israel</a>
       <a href="#United-States" id="United-States">United States</a>
       <a href="#France" id="France">France</a>
-      <a href="#Japan"  id="Japan">Japan</a>
+      <a href="#Japan" id="Japan">Japan</a>
     </div>
   </nav>
   <body>
-
     <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
 
     <script>
@@ -24,14 +23,9 @@
         // The location of Uluru
         const uluru = { lat: -25.344, lng: 131.036 };
         // The map, centered at Uluru
-        map = new google.maps.Map(document.getElementById("map"), {
+        map = new google.maps.Map(document.getElementById('map'), {
           zoom: 4,
           center: uluru,
-        });
-        // The marker, positioned at Uluru
-        const marker = new google.maps.Marker({
-          position: uluru,
-          map: map,
         });
       }
 
@@ -41,30 +35,59 @@
           lng: newLng,
         });
       }
-      document.getElementById("Israel").addEventListener("click", function () {
+      document.getElementById('Israel').addEventListener('click', function () {
         map.setCenter(new google.maps.LatLng(32, 34));
       });
-        document.getElementById("Australia").addEventListener("click", function () {
-        map.setCenter(new google.maps.LatLng( -33.865143, 151.209900));
-      });
-        document.getElementById("United-States").addEventListener("click", function () {
-        map.setCenter(new google.maps.LatLng(49.38,-66.94));
-      });
-        document.getElementById("France").addEventListener("click", function () {
+      document
+        .getElementById('Australia')
+        .addEventListener('click', function () {
+          map.setCenter(new google.maps.LatLng(-33.865143, 151.2099));
+        });
+      document
+        .getElementById('United-States')
+        .addEventListener('click', function () {
+          map.setCenter(new google.maps.LatLng(49.38, -66.94));
+        });
+      document.getElementById('France').addEventListener('click', function () {
         map.setCenter(new google.maps.LatLng(48.864716, 2.349014));
       });
-        document.getElementById("Japan").addEventListener("click", function () {
+      document.getElementById('Japan').addEventListener('click', function () {
         map.setCenter(new google.maps.LatLng(35.652832, 139.839478));
       });
 
-   
+      document
+        .getElementById('GetSorted')
+        .addEventListener('click', function () {
+          fetch('http://localhost:3000/getsorted', {
+            method: 'POST', // or 'PUT'
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              lat: map.getCenter().lat(),
+              lng: map.getCenter().lng(),
+            }),
+          })
+            .then((data) => data.json())
+            .then((data) => {
+              var ul = document.getElementById('myul');
+              data.forEach((element) => {
+                let li = document.createElement('li');
+                li.appendChild(
+                  document.createTextNode(
+                    `User name: ${element.name},    Distance: ${element.distance}`
+                  )
+                );
+                ul.appendChild(li);
+              });
+            });
+        });
     </script>
-
 
     <h3>My Google Maps Demo</h3>
     <!--The div element for the map -->
-    <div id="map" style="height: 400px; width: 400px"></div>
-
+    <div id="map" style="height: 800px; width: 1300px; float: left"></div>
+    <div style="float: right"><ul id="myul"></ul></div>
     <script
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC5abiKPVO2J1RwM-8AA7biri8UiBY4Soc&callback=initMap&libraries=&v=weekly"
       async

@@ -16,6 +16,7 @@ const fs = require('fs');
 const express = require('express');
 const cors = require('cors');
 
+//this module calculates distance between 2 coordinates
 const getDistance = require('./getDistance');
 
 const PORT=3000;
@@ -27,26 +28,30 @@ const app = express();
 app.use(express.urlencoded({ extended: true}));
 app.use(express.json());
 
+//Reading fake data
 const users = JSON.parse(fs.readFileSync(`${__dirname}/data.json`, 'utf-8'));
 
+//getting main root
 app.get('/',(req,res,next)=>{
-    res.locals.docsJSON = JSON.stringify(users);
     res.sendFile(`${__dirname}/index.html`);
 });
 
+//getting markers
 app.get('/markers',(req,res,next)=>{
 
     res.sendFile(`${__dirname}/markers.html`);
 });
 
+//getting clusters
 app.get('/clusters',(req,res,next)=>{
 
     res.sendFile(`${__dirname}/clusters.html`);
 });
 
+//posting center coordinates and sending sorted nearby users
 app.post('/getsorted' , (req,res,next)=> {
+    
     const lat = req.body.lat;
-    console.log(req.body);
     const lng = req.body.lng;
     const sortedUsers = users.map(el => {
         return {
@@ -60,12 +65,12 @@ app.post('/getsorted' , (req,res,next)=> {
     sortedUsers.sort((a,b)=> {
         return a.distance - b.distance;
     });
-    console.log(sortedUsers);
+
     res.send(sortedUsers);
 });
 
+//getting users data from server
 app.get('/getusers',(req,res,next)=>{
-
     res.send(users);
 });
 
